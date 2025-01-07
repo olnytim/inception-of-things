@@ -1,0 +1,35 @@
+Vagrant.configure("2") do |config|
+  # Define common settings
+  config.vm.box = "ubuntu/focal64" # Use the latest stable Ubuntu version
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 512 # Adjust RAM
+    vb.cpus = 1     # Set CPU
+  end
+
+  # Machine 1: Server
+  config.vm.define "server" do |server|
+    server.vm.hostname = "ServerS"
+    server.vm.network "private_network", ip: "192.168.56.110"
+    server.vm.provision "shell", inline: <<-SHELL
+      apt-get update
+      apt-get install -y sshpass curl
+      curl -sfL https://get.k3s.io | sh -s -
+      echo "K3s installed in controller mode."
+    SHELL
+  end
+
+  # Machine 2: ServerWorker
+  config.vm.define "serverworker" do |serverworker|
+    serverworker.vm.hostname = "ServerWorkerSW"
+    serverworker.vm.network "private_network", ip: "192.168.56.111"
+    serverworker.vm.provision "shell", inline: <<-SHELL
+      apt-get update
+      apt-get install -y sshpass curl
+      # Wait for Server to be ready
+      sleep 10
+      K3S_TOKEN=$(sshpass -p "vagrant" ssh -o StrictHostKeyChecking=no vagrant@192.168.56.110 "sudo cat /var/lib/rancher/k3s/server/node-token")
+      curl -sfL https://get.k3s.io | K3S_URL=https://192.168.56.110:6443 K3S_TOKEN=$K3S_TOKEN sh -
+      echo "K3s installed in agent mode."
+    SHELL
+  end
+end
