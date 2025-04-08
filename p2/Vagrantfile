@@ -1,0 +1,18 @@
+Vagrant.configure("2") do |config|
+    config.vm.box = "bento/ubuntu-22.04"
+    config.vm.provider "virtualbox" do |vb|
+        vb.memory = 4096
+        vb.cpus = 2
+    end
+
+    config.vm.define "tgalyautS" do |serv|
+            serv.vm.synced_folder "./confs", "/vagrant", type:"virtualbox"
+            serv.vm.hostname = "tgalyautS"
+            serv.vm.network "private_network", ip: "192.168.56.110"
+            serv.vm.post_up_message = "To connect to virtual machine use 'vagrant ssh tgalyautS'"
+            serv.vm.provider "virtualbox" do |first|
+                first.name = "master"
+            end
+            serv.vm.provision "shell", path: "./scripts/master.sh"
+        end
+end
