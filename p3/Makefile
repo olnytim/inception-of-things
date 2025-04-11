@@ -18,6 +18,7 @@ DOCKER   := docker
 K3D      := k3d
 KUBECTL  := kubectl
 ARGOCD   := argocd
+ARCH     := arm64
 
 # ~~~ ПРАВИЛА ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -64,7 +65,7 @@ install_docker:
 
 	# Добавляем репозиторий Docker
 	echo \
-	  "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.gpg] \
+	  "deb [arch=${ARCH} signed-by=/etc/apt/keyrings/docker.gpg] \
 	  https://download.docker.com/linux/ubuntu \
 	  jammy stable" | \
 	  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -87,7 +88,7 @@ install_kubectl:
 	@echo ">>> Installing kubectl..."
 	# Можно ставить через snap или напрямую через бинарник:
 	# Пример установки через официальные бинарники:
-	curl -LO "https://dl.k8s.io/release/v1.32.3/bin/linux/arm64/kubectl"
+	curl -LO "https://dl.k8s.io/release/v1.32.3/bin/linux/${ARCH}/kubectl"
 	sudo install -m 0755 kubectl /usr/local/bin/kubectl
 	rm -f kubectl
 	@echo ">>> kubectl installed!"
@@ -96,7 +97,7 @@ install_argocd:
 	@echo ">>> Installing Argo CD CLI..."
 	# Пример установки определённой версии:
 	curl -sSL -o argocd \
-	  "https://github.com/argoproj/argo-cd/releases/download/$(ARGOCD_VERSION)/argocd-linux-arm64"
+	  "https://github.com/argoproj/argo-cd/releases/download/$(ARGOCD_VERSION)/argocd-linux-${ARCH}"
 	sudo install -m 0755 argocd $(ARGOCD_BIN)
 	rm -f argocd
 	@echo ">>> Argo CD CLI installed!"
