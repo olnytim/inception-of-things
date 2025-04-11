@@ -21,8 +21,19 @@ ARGOCD   := argocd
 
 # ~~~ ПРАВИЛА ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-all: install_docker install_k3d install_kubectl install_argocd
+all: setup check project
+	@echo "All components installed and checked!"
+
+setup: install_docker install_k3d install_kubectl install_argocd
 	@echo "All components installed!"
+
+check: check_docker check_k3d check_kubectl check_argocd
+	@echo "All checks finished!"
+
+project:
+	@echo ">>> Project setup..."
+	./scripts/setup.sh
+	@echo ">>> Project setup finished!"
 
 fclean: remove_argocd remove_k3d remove_kubectl remove_docker
 	@echo "All components removed!"
@@ -91,9 +102,6 @@ install_argocd:
 	@echo ">>> Argo CD CLI installed!"
 
 # ~~~ ПРОВЕРКИ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-check: check_docker check_k3d check_kubectl check_argocd
-	@echo "All checks finished!"
 
 check_docker:
 	@echo ">>> Checking Docker..."
