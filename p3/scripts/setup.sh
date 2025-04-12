@@ -45,7 +45,7 @@ echo
 ## 8) Confirmation ArgoCD application
 echo "Confirming ArgoCD application..."
 # argocd localhost:8085 or argocd.mydomain.com:8085
-kubectl port-forward svc/argocd-server -n argocd 8085:443 > /dev/null 2>&1 &
+kubectl port-forward --address 0.0.0.0 svc/argocd-server -n argocd 8085:443 > /dev/null 2>&1 &
 kubectl apply -f confs/application.yaml
 
 echo ">>> Setup script has finished successfully."
