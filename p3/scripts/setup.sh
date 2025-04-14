@@ -1,55 +1,63 @@
 #!/bin/bash
-
 set -e
 
-# 1) Creation of k3d cluster
-echo "Creating k3d cluster..."
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+PURPLE='\033[0;35m'
+NC='\033[0m'
+
+echo -e "${YELLOW}Creating k3d cluster...${NC}"
 k3d cluster create iot
 sleep 5
 
-# 2) Setup kubectl context
-echo "Setting up context kubectl..."
+echo -e "${YELLOW}Setting up context kubectl...${NC}"
 kubectl config use-context k3d-iot
 
-# 3) Create namespace for ArgoCD
-echo "Creating namespace ArgoCD and Dev..."
+echo -e "${YELLOW}Creating namespace ArgoCD and Dev...${NC}"
 kubectl create namespace argocd
 kubectl create namespace dev
 
-# 4) Install ArgoCD
-echo "Installing ArgoCD..."
+echo -e "${YELLOW}Installing ArgoCD...${NC}"
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-# 5) Add entry to /etc/hosts
-echo "Adding entry to /etc/hosts..."
+echo -e "${YELLOW}Adding entry to /etc/hosts...${NC}"
 HOST_ENTRY="127.0.0.1 argocd.mydomain.com"
 HOSTS_FILE="/etc/hosts"
 
 if grep -q "$HOST_ENTRY" "$HOSTS_FILE"; then
-    echo "exist $HOSTS_FILE"
+    echo -e "${GREEN}Entry exists in $HOSTS_FILE${NC}"
 else
-    echo "adding $HOSTS_FILE"
+    echo -e "${YELLOW}Adding entry to $HOSTS_FILE${NC}"
     echo "$HOST_ENTRY" | sudo tee -a "$HOSTS_FILE"
 fi
 
-# 6) Wait for ArgoCD to be ready
-echo "Waiting for ArgoCD to be ready..."
+echo -e "${YELLOW}Waiting for ArgoCD to be ready...${NC}"
 kubectl wait --for=condition=ready --timeout=600s pod --all -n argocd
 
-# 7) Show basic auth
-echo "Showing basic auth..."
-kubectl -n argocd \
-    get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 --decode
+echo
+echo -e "${YELLOW}Showing basic auth:${PURPLE}"
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 --decode
+echo -e "${NC}"
 echo
 
-## 8) Confirmation ArgoCD application
-echo "Confirming ArgoCD application..."
-# argocd localhost:8085 or argocd.mydomain.com:8085
+echo -e "${YELLOW}Confirming ArgoCD application...${NC}"
 kubectl port-forward --address 0.0.0.0 svc/argocd-server -n argocd 8085:443 > /dev/null 2>&1 &
-kubectl port-forward --address 0.0.0.0 -n dev svc/svc-wil 8888:8080 > /dev/null 2>&1 &
+
 kubectl apply -f confs/application.yaml
 
-echo ">>> Setup script has finished successfully."
-echo ">>> ArgoCD server is now running in namespace 'argocd'."
-echo "You can access ArgoCD UI by port-forward or by NodePort."
-echo "Then login with user 'admin' and the above printed password."
+echo -e "${YELLOW}Waiting for svc-wil...${NC}"
+while ! kubectl get svc svc-wil -n dev > /dev/null 2>&1; do
+    sleep 5
+    echo -e "${YELLOW}Service svc-wil not ready yet. Please wait...${NC}"
+done
+
+echo -e "${YELLOW}Service svc-wil ready, launching port-forward...${NC}"
+sleep 15
+echo -e "${YELLOW}Launching port-forward for svc-wil...${NC}"
+kubectl port-forward --address 0.0.0.0 -n dev svc/svc-wil 8888:80 > /dev/null 2>&1 &
+
+echo -e "${GREEN}>>> Setup script has finished successfully.${NC}"
+echo -e "${GREEN}>>> ArgoCD server is now running in namespace 'argocd'.${NC}"
+echo -e "${GREEN}You can access ArgoCD UI by port-forward or by NodePort.${NC}"
+echo -e "${GREEN}Then login with user 'admin' and the above printed password.${NC}"
