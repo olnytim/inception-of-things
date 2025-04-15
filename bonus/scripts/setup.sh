@@ -5,8 +5,10 @@ RED="\033[31m"
 RESET="\033[0m"
 
 # after install k3d cluster create gitlab namespace
+echo -n "${GREEN}Creating k3d cluster...${RESET}"
 kubectl create namespace gitlab
 
+echo -n "${GREEN}Installing Helm...${RESET}"
 # install helm - https://helm.sh/
 sudo snap install helm --classic
 
@@ -23,6 +25,7 @@ fi
 
 # deploy gitlab to k3d - https://docs.gitlab.com/charts/installation/deployment.html
 #		               - https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/examples?ref_type=heads
+echo -n "${GREEN}Deploying GitLab...${RESET}"
 helm repo add gitlab https://charts.gitlab.io/
 helm repo update
 helm upgrade --install gitlab gitlab/gitlab \
@@ -34,6 +37,7 @@ helm upgrade --install gitlab gitlab/gitlab \
   --timeout 600s
 
 #waitpodloc
+echo -n "${GREEN}Waiting for pods to be ready...${RESET}"
 kubectl wait --for=condition=ready --timeout=1200s pod -l app=webservice -n gitlab
 
 # password to gitlab (user: root)
