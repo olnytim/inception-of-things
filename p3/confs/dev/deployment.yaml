@@ -16,9 +16,9 @@ spec:
     spec:
       containers:
         - name: wil
-          image: ckaserer/hello-kubernetes:latest #wil42/playground:v2 #
+          image: wil42/playground:v1 # ckaserer/hello-kubernetes:latest #
           ports:
-            - containerPort: 8080
-          env:
-            - name: MESSAGE
-              value: "Hello from App1"
+            - containerPort: 8888
+#          env:
+#            - name: MESSAGE
+#              value: "Hello from App1"
