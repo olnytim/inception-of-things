@@ -46,4 +46,4 @@ echo -n "${GREEN}GITLAB PASSWORD : "
 echo "${RESET}"
 
 # argocd localhost:80 or http://gitlab.k3d.gitlab.com
-kubectl port-forward svc/gitlab-webservice-default -n gitlab 80:8181 2>&1 >/dev/null &
+kubectl port-forward svc/gitlab-webservice-default -n gitlab 8080:8181 2>&1 >/dev/null &
