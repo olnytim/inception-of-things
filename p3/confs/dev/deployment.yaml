@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: wil
-          image: ckaserer/hello-kubernetes:latest # wil42/playground:v1
+          image: wil42/playground:v1 # ckaserer/hello-kubernetes:latest
           ports:
             - containerPort: 8080
           env:
