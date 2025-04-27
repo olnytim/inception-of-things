@@ -53,7 +53,6 @@ while ! kubectl get svc svc-wil -n dev > /dev/null 2>&1; do
 done
 
 echo -e "${YELLOW}Service svc-wil ready, launching port-forward...${NC}"
-sleep 15
 kubectl wait --for=condition=ready --timeout=600s pod --all -n dev
 echo -e "${YELLOW}Launching port-forward for svc-wil...${NC}"
 kubectl port-forward --address 0.0.0.0 -n dev svc/svc-wil 8888:8080 > /dev/null 2>&1 &
