@@ -51,4 +51,4 @@ cd ..
 
 kubectl apply -f ../confs/deployment.yaml
 
-echo -e "${GREEN}ENTER: ${PURPLE}kubectl port-forward --address 0.0.0.0 svc/svc-wil -n dev 8888:8080${NC}"
+echo -e "${GREEN}ENTER: ${PURPLE}kubectl port-forward --address 0.0.0.0 svc/svc-wil -n dev 8887:8080${NC}"
