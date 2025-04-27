@@ -20,4 +20,6 @@ sudo snap remove helm
 echo -e "${GREEN}Завершаем фоновый port-forward...${RESET}"
 pkill -f "kubectl port-forward svc/gitlab-webservice-default -n gitlab" || true
 
+sudo rm -rf iot git_repo
+
 echo -e "${GREEN}Удаление завершено!${RESET}"
