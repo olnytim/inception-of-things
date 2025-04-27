@@ -1,7 +1,7 @@
 #!/bin/bash
 
-GREEN="\033[32m"
-RED="\033[31m"
+GREEN="\033[0;32m"
+RED="\033[1;31m"
 RESET="\033[0m"
 
 # after install k3d cluster create gitlab namespace
@@ -38,7 +38,7 @@ helm upgrade --install gitlab gitlab/gitlab \
 
 #waitpodloc
 echo -n "${GREEN}Waiting for pods to be ready...${RESET}"
-kubectl wait --for=condition=ready --timeout=1200s pod -l app=webservice -n gitlab
+kubectl wait --for=condition=ready --timeout=1800s pod -l app=webservice -n gitlab
 
 # password to gitlab (user: root)
 echo -n "${GREEN}GITLAB PASSWORD : "
@@ -46,4 +46,4 @@ echo -n "${GREEN}GITLAB PASSWORD : "
 echo "${RESET}"
 
 # argocd localhost:80 or http://gitlab.k3d.gitlab.com
-kubectl port-forward svc/gitlab-webservice-default -n gitlab 8080:8181 2>&1 >/dev/null &
+kubectl port-forward svc/gitlab-webservice-default -n gitlab 80:8181 2>&1 >/dev/null &

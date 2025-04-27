@@ -20,7 +20,7 @@ DOCKER   := docker
 K3D      := k3d
 KUBECTL  := kubectl
 ARGOCD   := argocd
-ARCH     := arm64
+ARCH     := amd64
 
 # ~~~ ПРАВИЛА ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 all: setup check project
