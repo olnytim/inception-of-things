@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: app1
-          image: ckaserer/hello-kubernetes:latest
+          image: paulbouwer/hello-kubernetes:1.10
           ports:
             - containerPort: 8080
           env:
@@ -54,7 +54,7 @@ spec:
     spec:
       containers:
         - name: app2
-          image: ckaserer/hello-kubernetes:latest
+          image: paulbouwer/hello-kubernetes:1.10
           ports:
             - containerPort: 8080
           env:
@@ -92,7 +92,7 @@ spec:
     spec:
       containers:
         - name: app3
-          image: ckaserer/hello-kubernetes:latest
+          image: paulbouwer/hello-kubernetes:1.10
           ports:
             - containerPort: 8080
           env:
